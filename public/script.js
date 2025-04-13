@@ -283,6 +283,7 @@ function displayResults(resultData) {
     let html = `
       <div class="invoice">
         <div class="invoice-header">
+        <img src="assets/logo.png" alt="nuDoors Logo" class="invoice-logo"> 
            <h1>Project Estimate</h1>
            <p>Date: ${dateStr}</p>
            <p>Estimate ID: ${Date.now()}</p>
