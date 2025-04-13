@@ -1,10 +1,11 @@
+
 {
-  "name": "nudoors-estimator",
-  "version": "1.0.0",
-  "description": "Web application for calculating nuDoors estimates.",
-  "main": "api/index.js",
+  "name": "nudoors-estimator-contractor",
+  "version": "1.1.0",
+  "description": "Contractor web application for calculating nuDoors estimates.",
+  "main": "server.js",
   "scripts": {
-    "start": "node api/index.js",
+    "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
@@ -13,6 +14,6 @@
   "engines": {
     "node": "22.x"
   },
-  "author": "Dan (Your Name/Company)",
+  "author": "nuDoors",
   "license": "UNLICENSED"
 }

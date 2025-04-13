@@ -1,97 +1,70 @@
-// --- START OF FILE server.js --- // FINAL VERSION (for Contractor App - CalcApp_Master)
+// --- FILE: server.js ---
 
 const express = require('express');
-const fs = require('fs');
 const path = require('path');
-// --- Path relative to root server.js ---
-const { calculateOverallTotal } = require('./calculation.js'); // Assumes calculation.js is in the root
+const fs = require('fs');
+const { calculateOverallTotal } = require('./calculation.js'); // Import CONTRACTOR calculation logic
 
 const app = express();
-// PORT for local development; Vercel assigns its own port dynamically
-const PORT = process.env.PORT || 3000; // Default to 3000 if process.env.PORT is not set
+const PORT = process.env.PORT || 3002; // Use a different port (e.g., 3002) for local dev if running DIY app simultaneously
 
-app.use(express.json()); // Middleware to parse JSON request bodies
-
-// --- Path relative to root server.js ---
-// Serve static files from the 'public' directory at the project root
-app.use(express.static(path.join(__dirname, 'public'))); // __dirname here is the project root
-
-console.log("Attempting to load pricingData.json from root..."); // Startup log
+// --- Load Pricing Data ---
+// Construct the absolute path to the pricing data file inside the 'data' folder
+const pricingPath = path.join(__dirname, 'data', 'pricingData.json'); // Path updated
 let pricingData;
 try {
-  // --- Path relative to root server.js ---
-  const pricingPath = path.join(__dirname, 'pricingData.json'); // Assumes pricingData.json is in the root
-  if (fs.existsSync(pricingPath)) {
-      pricingData = JSON.parse(fs.readFileSync(pricingPath));
-      console.log("Successfully loaded pricingData.json");
-  } else {
-      console.error("CRITICAL ERROR: pricingData.json not found at path:", pricingPath);
-      console.error("Ensure pricingData.json is in the root directory and committed.");
-      pricingData = {}; // Allow server start, but calculations will fail
-  }
-} catch (error) {
-    console.error("CRITICAL ERROR reading or parsing pricingData.json:", error);
-    console.error("Ensure pricingData.json is valid JSON.");
-    pricingData = {}; // Fallback
-}
-
-
-// The actual calculation route for the contractor app
-app.post('/calculate', (req, res) => {
-  console.log("Received POST /calculate request in server.js (Contractor App)"); // Log invocation
-  // Check if pricingData loaded correctly
-  if (!pricingData || Object.keys(pricingData).length === 0) {
-     console.error("Calculation error: pricingData was not loaded correctly during server startup.");
-     return res.status(500).json({ error: 'Server configuration error: Pricing data missing or invalid.' });
-  }
-  try {
-    const payload = req.body;
-    // Validation for the contractor payload structure
-    if (!payload || typeof payload !== 'object' || !payload.sections || !payload.part2 || !payload.part3 || !payload.priceSetup) {
-        console.error("Invalid contractor payload structure received:", payload);
-        return res.status(400).json({ error: 'Invalid request payload structure. Missing required keys (sections, part2, part3, priceSetup).' });
+    const rawData = fs.readFileSync(pricingPath, 'utf8');
+    pricingData = JSON.parse(rawData);
+    console.log("[Server Contractor] Pricing data loaded successfully from data/pricingData.json."); // Updated log
+    // Basic validation of loaded data
+    if (!pricingData || !pricingData.doorPricingGroups || !pricingData.hingeCosts || !pricingData.customPaint || !pricingData.lazySusan) {
+         throw new Error("Pricing data is missing required sections (doorPricingGroups, hingeCosts, customPaint, lazySusan).");
     }
-
-    console.log("Calling calculateOverallTotal (Full version)...");
-    // Ensure the require('./calculation.js') loaded the FULL version of the function
-    const result = calculateOverallTotal(payload, pricingData);
-    console.log("Calculation successful, sending result.");
-    res.json(result); // Send the full result
-
-  } catch (error) {
-    // Log detailed errors
-    console.error('Calculation endpoint error:', error.message);
-    console.error(error.stack);
-    res.status(500).json({ error: 'Internal server error during calculation.' });
-  }
-});
-
-// Optional Catch-all for requests not handled by static files or /calculate
-app.use((req, res) => {
-    console.log(`Reached server catch-all in server.js for ${req.method} ${req.url}`);
-    res.status(404).send(`Server catch-all (server.js): Route ${req.method} ${req.url} not handled.`);
-});
-
-
-// --- Conditional Listening for LOCAL development ONLY ---
-// Check if the script is the main module being run
-if (require.main === module) {
-  app.listen(PORT, () => {
-    console.log(`Contractor App Server running locally on http://localhost:${PORT}`);
-  });
-} else {
-    console.log("server.js loaded as a module (likely by Vercel). Skipping app.listen().");
+} catch (error) {
+    console.error("[Server Contractor] FATAL ERROR: Could not load or parse pricing data.", error);
+    // Exit if pricing data is essential and cannot be loaded
+    process.exit(1);
 }
 
-// --- IMPORTANT: Export the Express app for Vercel ---
-// This is ONLY needed if you deploy this version using the api/index.js structure and vercel.json.
-// If you deploy this server.js from the root using Vercel's build step for server.js,
-// you might not strictly need the export, but it doesn't hurt.
-// **** However, your Vercel config currently points to api/index.js.
-// **** If you want THIS file to run on Vercel for the contractor app,
-// **** you MUST either:
-// ****   A) Rename THIS file to api/index.js in the contractor project root OR
-// ****   B) Update the contractor project's vercel.json `builds` and `routes` to point to "server.js" instead of "api/index.js".
-module.exports = app;
 
-// --- END OF FILE server.js --- // FINAL VERSION (for Contractor App)
+// --- Middleware ---
+app.use(express.json()); // Parse JSON request bodies
+app.use(express.static(path.join(__dirname, 'public'))); // Serve static files (HTML, CSS, JS, Assets) from 'public' folder
+
+// --- API Routes ---
+app.post('/calculate', (req, res) => {
+    console.log(`[Server Contractor] Received POST request on /calculate`);
+    try {
+        // Pass the loaded pricing data to the calculation function
+        const result = calculateOverallTotal(req.body, pricingData);
+        console.log(`[Server Contractor] Calculation successful. Sending response.`);
+        res.json(result);
+    } catch (error) {
+        console.error('[Server Contractor] Error during calculation:', error.message);
+        // Send a more informative error response
+        res.status(400).json({ error: 'Calculation error', message: error.message }); // Use 400 for bad input/calc errors
+    }
+});
+
+// --- Base Route (Serve index.html) ---
+// Optional: Explicitly serve index.html for the root path,
+// though express.static usually handles this. Good for clarity.
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// --- Generic Error Handler (Place after all routes) ---
+app.use((err, req, res, next) => {
+  console.error("[Server Contractor] Unhandled Error:", err.stack);
+  res.status(500).json({ error: 'Internal Server Error', message: 'An unexpected error occurred.' });
+});
+
+
+// --- Start Server ---
+// Use PORT variable defined earlier
+app.listen(PORT, () => {
+    console.log(`[Server Contractor] nuDoors Contractor Estimator server running at http://localhost:${PORT}`);
+});
+
+// --- Optional: Export for potential modular use (Render doesn't strictly need it for 'npm start') ---
+module.exports = app; // Keep for flexibility

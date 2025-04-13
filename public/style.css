@@ -1,0 +1,430 @@
+/* --- FILE: public/style.css (CONTRACTOR VERSION - MODIFIED) --- */
+
+/* Reset and Base Styles */
+* { border: 0; box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+    /* Neumorphic Variables */
+    --hue: 184;
+
+    /* --- SHADOWS REDUCED BY 50% --- */
+    --bg-light: hsl(var(--hue),10%,90%);
+    --fg-light: hsl(var(--hue),10%,30%);
+    --primary-light: hsl(var(--hue),66%,44%);
+    --gradient-light: linear-gradient(145deg, hsl(var(--hue),10%,95%), hsl(var(--hue),10%,85%));
+    /* Halved offsets/blur: 0.2rem->0.1rem, 0.5rem->0.25rem */
+    --shadow-light-inset: inset 0.1rem 0.1rem 0.25rem hsl(var(--hue),10%,80%), inset -0.1rem -0.1rem 0.25rem hsl(0,0%,100%);
+    /* Halved offsets/blur: 0.4rem->0.2rem, 0.8rem->0.4rem */
+    --shadow-light-outset-concave: inset 0.2rem 0.2rem 0.4rem hsl(var(--hue),10%,80%), inset -0.2rem -0.2rem 0.4rem hsl(0,0%,100%);
+     /* Halved offsets/blur: 0.3rem->0.15rem, 0.6rem->0.3rem */
+    --shadow-light-outset-convex: 0.15rem 0.15rem 0.3rem hsl(var(--hue),10%,75%), -0.15rem -0.15rem 0.3rem hsl(0,0%,100%);
+     /* Halved offsets/blur: 0.15rem->0.075rem, 0.4rem->0.2rem */
+    --shadow-light-inset-input: inset 0.075rem 0.075rem 0.2rem hsl(var(--hue),10%,80%), inset -0.075rem -0.075rem 0.2rem hsl(0,0%,100%);
+
+    --bg-dark: hsl(var(--hue),10%,15%);
+    --fg-dark: hsl(var(--hue),10%,85%);
+    --primary-dark: hsl(var(--hue),66%,54%);
+    --gradient-dark: linear-gradient(145deg, hsl(var(--hue),10%,18%), hsl(var(--hue),10%,12%));
+    /* Halved offsets/blur: 0.2rem->0.1rem, 0.5rem->0.25rem */
+    --shadow-dark-inset: inset 0.1rem 0.1rem 0.25rem hsl(var(--hue),10%,10%), inset -0.1rem -0.1rem 0.25rem hsl(var(--hue),10%,25%);
+    /* Halved offsets/blur: 0.4rem->0.2rem, 0.8rem->0.4rem */
+    --shadow-dark-outset-concave: inset 0.2rem 0.2rem 0.4rem hsl(var(--hue),10%,10%), inset -0.2rem -0.2rem 0.4rem hsl(var(--hue),10%,25%);
+    /* Halved offsets/blur: 0.3rem->0.15rem, 0.6rem->0.3rem */
+    --shadow-dark-outset-convex: 0.15rem 0.15rem 0.3rem hsl(var(--hue),10%,8%), -0.15rem -0.15rem 0.3rem hsl(var(--hue),10%,25%);
+     /* Halved offsets/blur: 0.15rem->0.075rem, 0.4rem->0.2rem */
+    --shadow-dark-inset-input: inset 0.075rem 0.075rem 0.2rem hsl(var(--hue),10%,10%), inset -0.075rem -0.075rem 0.2rem hsl(var(--hue),10%,25%);
+    /* --- END SHADOWS REDUCED --- */
+
+    /* Theme Mapping (Default Light) */
+    --bg: var(--bg-light);
+    --fg: var(--fg-light);
+    --primary: var(--primary-light);
+    --gradient: var(--gradient-light);
+    --shadow-inset: var(--shadow-light-inset);
+    --shadow-outset-concave: var(--shadow-light-outset-concave);
+    --shadow-outset-convex: var(--shadow-light-outset-convex);
+    --container-bg: var(--bg);
+    --input-bg: var(--bg);
+    --input-shadow: var(--shadow-light-inset);
+    --input-shadow-specific: var(--shadow-light-inset-input);
+    --button-bg: var(--gradient);
+    --button-shadow: var(--shadow-light-outset-convex);
+    --button-shadow-active: var(--shadow-light-outset-concave);
+    --border-color: transparent;
+    --remove-btn-bg: #e57373;
+    --error-bg-color: #721c24;
+    --error-text-color: #f8d7da;
+
+    --collapsed-width: 80px;
+    font-size: 16px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body[data-theme="dark"] {
+    --bg: var(--bg-dark);
+    --fg: var(--fg-dark);
+    --primary: var(--primary-dark);
+    --gradient: var(--gradient-dark);
+    --shadow-inset: var(--shadow-dark-inset);
+    --shadow-outset-concave: var(--shadow-dark-outset-concave);
+    --shadow-outset-convex: var(--shadow-dark-outset-convex);
+    --container-bg: var(--bg);
+    --input-bg: var(--bg);
+    --input-shadow: var(--shadow-dark-inset);
+    --input-shadow-specific: var(--shadow-dark-inset-input);
+    --button-bg: var(--gradient);
+    --button-shadow: var(--shadow-dark-outset-convex);
+    --button-shadow-active: var(--shadow-dark-outset-concave);
+    --remove-btn-bg: #c62828;
+    --error-bg-color: #582a2e;
+    --error-text-color: #f5c6cb;
+}
+
+
+body, button, input, select {
+    color: var(--fg);
+    font-family: "Nunito", sans-serif;
+    outline: transparent;
+    transition: all 0.2s ease-out;
+    -webkit-tap-highlight-color: transparent;
+}
+body { background: var(--bg); min-height: 100vh; padding: 2em; line-height: 1.6; }
+header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5em; padding-bottom: 1.5em; border-bottom: none; flex-wrap: wrap; gap: 1em; }
+header h1 { margin: 0; color: var(--primary); font-size: 2em; font-weight: 700; margin-right: auto;}
+header img { height: 40px; flex-shrink: 0; }
+
+/* Theme Toggle Button Specific Style */
+#themeToggleBtn {
+    margin-left: auto;
+    height: 35px;
+    width: 50px;
+    font-size: 1.2em;
+    padding: 0;
+    background: var(--button-bg);
+    color: var(--fg);
+    box-shadow: var(--button-shadow);
+    border-radius: 0; /* --- REMOVE RADIUS --- */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+    border: none;
+}
+#themeToggleBtn:hover { opacity: 1; color: var(--primary); }
+#themeToggleBtn:active { box-shadow: var(--button-shadow-active); transform: translateY(1px); color: var(--primary); } /* Adjust active transform */
+
+#toggleInstructionsContainer { margin-bottom: 0.5em; }
+#instructions { display: none; background: var(--container-bg); padding: 1.5em; border-radius: 0; /* --- REMOVE RADIUS --- */ margin-bottom: 1.5em; box-shadow: var(--shadow-outset-convex); border: none; }
+#instructions strong { color: var(--primary); font-weight: 700; }
+#instructions ol { margin-left: 1.5em; padding-left: 0.5em; }
+#instructions li { margin-bottom: 0.5em; }
+#instructions a { color: var(--primary); text-decoration: none; }
+#instructions a:hover { text-decoration: underline; }
+#exampleImage { text-align: center; margin-bottom: 1.5em; }
+#exampleImage img { max-width: 90%; height: auto; border-radius: 0; /* --- REMOVE RADIUS --- */ border: none; box-shadow: var(--shadow-outset-convex); }
+
+/* Main Config Row */
+#mainConfigRow { display: flex; flex-wrap: wrap; gap: 1.5em; align-items: stretch; margin-bottom: 1.5em; }
+
+/* General Container Style */
+.part, .section, #priceSetupContainer { background: var(--container-bg); border-radius: 0; /* --- REMOVE RADIUS --- */ padding: 1.5em; box-shadow: var(--shadow-outset-convex); border: none; box-sizing: border-box; display: flex; flex-direction: column; transition: background-color 0.3s ease, box-shadow 0.3s ease;}
+
+/* Price Setup Specifics */
+#priceSetupContainer {
+  flex: 0 1 450px;
+  min-width: var(--collapsed-width);
+  overflow: hidden;
+  transition: width 0.4s ease-in-out, padding 0.4s ease-in-out, min-width 0.4s ease-in-out, box-shadow 0.2s ease-out, background-color 0.3s ease;
+}
+#priceSetupContainer.collapsed {
+     flex-basis: var(--collapsed-width);
+     width: var(--collapsed-width);
+     padding: 1em;
+     min-width: var(--collapsed-width);
+     box-shadow: var(--shadow-outset-concave);
+     cursor: pointer;
+     justify-content: center;
+     align-items: center;
+     overflow: hidden;
+ }
+  #priceSetupContainer.collapsed > *:not(h2) {
+      visibility: hidden;
+      opacity: 0;
+      height: 0;
+      overflow: hidden;
+      transition: opacity 0.1s linear, visibility 0s linear 0.1s, height 0s linear 0.1s;
+      margin: 0; padding: 0;
+  }
+  #priceSetupContainer.collapsed h2 {
+      margin-bottom: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+  }
+  #priceSetupContainer.collapsed h2 > span { display: none; }
+  #priceSetupContainer.collapsed h2 > button { margin: 0; }
+
+#priceSetupContent { transition: opacity 0.2s linear 0.1s; opacity: 1; visibility: visible; height: auto; }
+.price-setup-columns { display: flex; gap: 1.5em; flex-wrap: wrap; }
+.price-setup-columns > div { flex: 1; min-width: 180px; }
+
+/* Other Parts Container */
+#otherPartsContainer { flex: 1 1 500px; display: flex; flex-wrap: wrap; gap: 1.5em; min-width: 250px; }
+#otherPartsContainer .part { flex-basis: calc(50% - 0.75em); min-width: 240px; }
+
+/* Rough Estimate Section Container */
+#roughEstimateContainer { margin-bottom: 1em; }
+#sectionsContainer { display: flex; flex-wrap: wrap; gap: 1em; margin-bottom: 1em; }
+.section { flex-grow: 0; flex-shrink: 1; flex-basis: 25vw; min-width: 300px; max-width: 25vw; }
+.section-header { display: flex; justify-content: center; align-items: center; margin-bottom: 1em; }
+.section-id { text-align: center; min-width: 85px; font-weight: 700; color: var(--primary); font-size: 0.9em; background: var(--bg); padding: 3px 6px; border-radius: 0; /* --- REMOVE RADIUS --- */ white-space: nowrap; vertical-align: middle; box-sizing: border-box; box-shadow: var(--shadow-inset); transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;}
+#sectionsContainer .section > * { width: 100%; }
+
+/* General Form Elements */
+h2 { color: var(--primary); font-size: 1.3em; margin-bottom: 1em; border-bottom: none; padding-bottom: 0; font-weight: 700; display: flex; justify-content: space-between; align-items: center; transition: color 0.3s ease;}
+label { display: block; margin-bottom: 1em; font-size: 0.95em; color: var(--fg); font-weight: 400; transition: color 0.3s ease;}
+
+/* Input & Select Styling */
+input[type="number"], select {
+    background: var(--input-bg);
+    border-radius: 0; /* --- REMOVE RADIUS --- */
+    padding: 0.8em 1em;
+    width: 100%; box-sizing: border-box; margin-top: 0.4em;
+    font-size: 1em; color: var(--fg);
+    box-shadow: var(--input-shadow); border: none;
+    appearance: none; -webkit-appearance: none;
+    transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, background-image 0.3s ease;
+}
+ input[type="number"]:focus, select:focus { box-shadow: var(--input-shadow), 0 0 0 2px var(--primary); }
+ select {
+     background-image: linear-gradient(45deg, transparent 50%, var(--fg) 50%), linear-gradient(135deg, var(--fg) 50%, transparent 50%);
+     background-position: calc(100% - 15px) calc(1em + 0px), calc(100% - 10px) calc(1em + 0px); /* Adjust arrow position slightly */
+     background-size: 5px 5px, 5px 5px;
+     background-repeat: no-repeat;
+     padding-right: 2.5em;
+     cursor: pointer;
+}
+/* Remove arrow in dark theme if needed */
+/* body[data-theme="dark"] select { background-image: none; padding-right: 1em; } */
+
+/* Styles for White Inputs in Price Setup */
+#priceSetupContainer input[type="number"],
+#priceSetupContainer select {
+  background-color: white;
+  color: black;
+  box-shadow: var(--input-shadow-specific);
+  border: 1px solid rgba(0,0,0,0.05);
+}
+#priceSetupContainer input[type="number"]:focus,
+#priceSetupContainer select:focus {
+     box-shadow: var(--input-shadow-specific), 0 0 0 2px var(--primary);
+}
+#priceSetupContainer label,
+#priceSetupContainer small { color: var(--fg); }
+body[data-theme="dark"] #priceSetupContainer input[type="number"],
+body[data-theme="dark"] #priceSetupContainer select {
+    background-color: #f0f0f0;
+    color: black;
+    box-shadow: var(--shadow-dark-inset-input);
+    border: 1px solid #444;
+}
+body[data-theme="dark"] #priceSetupContainer input[type="number"]:focus,
+body[data-theme="dark"] #priceSetupContainer select:focus {
+     box-shadow: var(--shadow-dark-inset-input), 0 0 0 2px var(--primary);
+}
+body[data-theme="dark"] #priceSetupContainer label,
+body[data-theme="dark"] #priceSetupContainer small { color: var(--fg); }
+
+/* Button Styling */
+button { background: var(--button-bg); box-shadow: var(--button-shadow); padding: 0.8em 1.2em; border-radius: 0; /* --- REMOVE RADIUS --- */ color: var(--fg); cursor: pointer; font-weight: 700; transition: all 0.15s linear; font-size: 1em; display: inline-flex; justify-content: center; align-items: center; gap: 0.5em; border: none; }
+button:hover:not(:disabled) { opacity: 1; color: var(--primary); }
+button:active:not(:disabled) { box-shadow: var(--button-shadow-active); transform: translateY(1px); color: var(--primary); } /* Adjusted active transform */
+button:focus-visible { box-shadow: var(--button-shadow), 0 0 0 2px var(--primary); }
+button:disabled { opacity: 0.6; cursor: not-allowed; box-shadow: var(--shadow-inset) !important; transform: none !important;}
+
+/* Specific Buttons */
+#addSectionBtn { margin-top: 1em; margin-bottom: 1.5em; display: inline-block; width: auto; }
+#formActions { margin-top: 1.5em; display: flex; gap: 1em; flex-wrap: wrap; }
+#calculateBtn { padding: 0.8em 2em; font-size: 1.1em; flex-grow: 1; background: var(--primary); color: var(--bg); border: none; box-shadow: var(--button-shadow); }
+#calculateBtn:hover:not(:disabled) { filter: brightness(1.1); box-shadow: var(--button-shadow); }
+#calculateBtn:active:not(:disabled) { filter: brightness(0.9); box-shadow: var(--button-shadow-active); }
+
+#clearAllBtn { background: hsl(var(--hue), 5%, 70%); box-shadow: 0.1rem 0.1rem 0.25rem hsl(var(--hue), 5%, 60%), -0.1rem -0.1rem 0.25rem hsl(var(--hue), 5%, 80%); /* Adjusted shadow */ color: hsl(var(--hue), 5%, 30%); padding: 0.8em 1.5em; font-size: 1.1em; flex-grow: 1; }
+#clearAllBtn:active { box-shadow: inset 0.1rem 0.1rem 0.25rem hsl(var(--hue), 5%, 60%), inset -0.1rem -0.1rem 0.25rem hsl(var(--hue), 5%, 80%); }
+body[data-theme="dark"] #clearAllBtn { background: hsl(var(--hue), 5%, 30%); box-shadow: 0.1rem 0.1rem 0.25rem hsl(var(--hue), 5%, 20%), -0.1rem -0.1rem 0.25rem hsl(var(--hue), 5%, 40%); color: hsl(var(--hue), 5%, 80%); }
+body[data-theme="dark"] #clearAllBtn:active { box-shadow: inset 0.1rem 0.1rem 0.25rem hsl(var(--hue), 5%, 20%), inset -0.1rem -0.1rem 0.25rem hsl(var(--hue), 5%, 40%); }
+
+/* Updated Remove Button */
+button.remove-button {
+    background: var(--remove-btn-bg);
+    box-shadow: none;
+    color: white;
+    padding: 0.4em 0.8em; font-size: 0.8em;
+    margin-top: auto; margin-left: auto; align-self: flex-end;
+    display: block; width: fit-content; border-radius: 0; /* --- REMOVE RADIUS --- */
+    border: none;
+}
+ button.remove-button:hover { filter: brightness(1.1); color: white; }
+ button.remove-button:active { box-shadow: none; transform: translateY(1px); filter: brightness(0.9); }
+
+ /* Toggle Buttons */
+ #togglePriceSetupBtn, #toggleInstructionsBtn, #toggleDetailsBtn {
+     align-items: center;font-size: 0.9em; font-weight: 800; padding: 0.3em .6em; width: auto;
+     background: var(--bg); box-shadow: var(--shadow-inset); border-radius: 0; /* --- REMOVE RADIUS --- */
+     color: var(--fg); border: none;
+ }
+ #togglePriceSetupBtn:active, #toggleInstructionsBtn:active, #toggleDetailsBtn:active {
+     box-shadow: var(--button-shadow-active);
+     color: var(--primary);
+     transform: translateY(1px);
+ }
+
+/* Results & Invoice */
+#results { margin-top: 2em; background: transparent; border: none; padding: 0; overflow-x: visible; width: 100%;}
+.invoice { max-width: 80%; min-width: 320px; margin: 2em auto; padding: 2em; border-radius: 0; /* --- REMOVE RADIUS --- */ background: var(--container-bg); box-shadow: var(--shadow-outset-convex); color: var(--fg); border: none; transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;}
+.invoice-header { text-align: center; margin-bottom: 1.5em; padding-bottom: 1.5em; border-bottom: 1px solid hsla(var(--hue), 10%, 50%, 0.3); transition: border-color 0.3s ease; }
+.invoice-header img.invoice-logo { display: block; margin: 0 auto 0.5em auto; height: 50px; max-height: 50px; width: auto; }
+.invoice-header h1 { color: var(--primary); margin-bottom: 0.2em; font-size: 1.8em; font-weight: 700; transition: color 0.3s ease;}
+.invoice-header p { font-size: 0.9em; color: var(--fg); opacity: 0.8; transition: color 0.3s ease;}
+.invoice hr.invoice-hr { display: none; }
+.invoice h2 { font-size: 1.3em; color: var(--primary); margin-bottom: 1em; border-bottom: none; font-weight: 700; text-align: center; transition: color 0.3s ease;}
+.summary-table, .details-table { width: 100%; border-collapse: separate; border-spacing: 0 0.5em; margin-bottom: 1.5em; }
+.summary-table td, .details-table td { padding: 0.8em 1em; border-bottom: none; vertical-align: middle; transition: color 0.3s ease;}
+.summary-table tr, .details-table tr { background: var(--gradient); border-radius: 0; /* --- REMOVE RADIUS --- */ box-shadow: var(--shadow-inset); transition: background-image 0.3s ease, box-shadow 0.3s ease;}
+.summary-table .table-label, .details-table td:first-child { text-align: left; padding-right: 1em; color: var(--fg); opacity: 0.9; transition: color 0.3s ease;}
+.summary-table .table-value, .details-table td:last-child { text-align: right; font-weight: 700; color: var(--fg); transition: color 0.3s ease;}
+.summary-table tfoot { border-top: 1px solid hsla(var(--hue), 10%, 50%, 0.3); margin-top: 1em; transition: border-color 0.3s ease;}
+.summary-table tfoot td { border-bottom: none; padding-top: 1em; }
+.summary-table .total-row td { font-size: 1.2em; font-weight: 700; color: var(--primary); padding-top: 1em; background: none; box-shadow: none; transition: color 0.3s ease;}
+.details-section { margin-top: 1.5em; padding: 1.5em; background: var(--bg); border-radius: 0; /* --- REMOVE RADIUS --- */ box-shadow: var(--shadow-inset); border: none; transition: background-color 0.3s ease, box-shadow 0.3s ease;}
+.details-section h3 { font-size: 1.1em; color: var(--primary); margin-bottom: 1em; text-align: center; font-weight: 700; transition: color 0.3s ease;}
+.details-table td { padding: 0.5em 0.8em; font-size: 0.9em; }
+.details-table tr { border-radius: 0; /* --- REMOVE RADIUS --- */ }
+.estimate-footer { text-align: center; margin-top: 2em; font-size: 0.85em; color: var(--fg); opacity: 0.7; transition: color 0.3s ease;}
+#printButtonContainer { margin-top: 1.5em; text-align: center; display: none; }
+#printEstimate { padding: 0.8em 1.5em; font-size: 1.1em; width: auto; }
+small { display: block; font-size: 0.8em; color: var(--fg); opacity: 0.8; margin-top: 0.4em; margin-left: 0; line-height: 1.3; transition: color 0.3s ease;}
+#priceSetupContainer small { font-size: 0.75em; opacity: 0.7; }
+.invoice-error { padding: 1em; background-color: var(--error-bg-color); color: var(--error-text-color); border: none; border-radius: 0; /* --- REMOVE RADIUS --- */ margin: 1em; box-shadow: var(--shadow-inset); transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;}
+.invoice-error p { margin: 0.2em 0; }
+.invoice-loading { text-align:center; padding: 2em; color: var(--fg); opacity: 0.7; font-style: italic; transition: color 0.3s ease; }
+
+/* Responsive */
+@media (max-width: 1024px) {
+    body { padding: 1.5em; }
+    #mainConfigRow { gap: 1em; }
+    #priceSetupContainer { flex-basis: 350px; }
+    #otherPartsContainer { flex: 1 1 400px; }
+    #otherPartsContainer .part { flex-basis: calc(50% - 0.75em); min-width: 240px; }
+    .section { flex-grow: 0; flex-shrink: 1; flex-basis: 25vw; min-width: 280px; max-width: 25vw; }
+    .invoice { padding: 1.5em; max-width: 90%; }
+}
+@media (max-width: 768px) {
+    body { padding: 1em; font-size: 15px; }
+    header { flex-direction: row; gap: 0.5em; text-align: left; align-items: center;}
+    header h1 { font-size: 1.5em; }
+    #mainConfigRow { flex-direction: column; align-items: stretch; gap: 1em; }
+    #priceSetupContainer { flex-basis: auto; width: 100%; min-width: 0; }
+    #priceSetupContainer.collapsed { width: var(--collapsed-width); flex-basis: var(--collapsed-width); align-self: flex-start; min-width: var(--collapsed-width); }
+    #otherPartsContainer { flex-basis: auto; width: 100%; }
+    #otherPartsContainer .part { flex-basis: calc(50% - 0.5em); min-width: 220px; }
+    .section { flex-grow: 0; flex-shrink: 1; flex-basis: calc(50% - 0.5em); min-width: 260px; max-width: none; }
+    input[type="number"], select { padding: 0.8em 1em; }
+    button { padding: 0.8em 1.2em; font-size: 1em; }
+    #addSectionBtn, #togglePriceSetupBtn, #toggleInstructionsBtn, button.remove-button, #printEstimate, #toggleDetailsBtn { width: auto; display: inline-block; }
+    button.remove-button { align-self: flex-end; padding: 0.5em 1em; }
+    #formActions { display: flex; flex-direction: row; gap: 0.8em; margin-top: 1em; }
+    #calculateBtn, #clearAllBtn { margin-right: 0; width: auto; flex-grow: 1;}
+    .invoice { padding: 1.5em; max-width: 95%; }
+    .invoice-header h1 { font-size: 1.6em; }
+}
+@media (max-width: 600px) {
+     header h1 { font-size: 1.2em; }
+     #sectionsContainer .section { flex-basis: 100%; max-width: none; min-width: 0; margin-bottom: 1em; }
+     #otherPartsContainer .part { flex-basis: 100%; min-width: 0; margin-bottom: 1em; }
+     .invoice { padding: 1em; max-width: 98%; }
+     .price-setup-columns { flex-direction: column; gap: 0.5em; }
+     #priceSetupContainer.collapsed { width: 100%; flex-basis: auto; justify-content: flex-start; padding: 1em; min-width: 0; align-items: stretch; }
+     #priceSetupContainer.collapsed h2 { justify-content: space-between; }
+     #priceSetupContainer.collapsed h2 > span { display: inline; }
+     #formActions { flex-direction: column; }
+}
+
+/* Print Styles (Ink-Saving, Plain - Final) */
+@media print {
+    /* Basic page setup */
+    @page { size: A4; margin: 1cm; }
+    body {
+        background: white !important; color: black !important; margin: 0 !important; padding: 0 !important;
+        font-family: Arial, sans-serif !important; font-size: 10pt !important; line-height: 1.3;
+        -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;
+        height: auto !important; width: auto !important; overflow: visible !important;
+    }
+    /* Hide unwanted elements */
+    header, #instructions, #exampleImage, #calcForm, #printButtonContainer, #formActions button#clearAllBtn, .toggle-details-btn, #toggleInstructionsContainer, button.remove-button, #addSectionBtn, #togglePriceSetupBtn, #themeToggleBtn, small, #mainConfigRow, #otherPartsContainer, #roughEstimateContainer, #priceSetupContainer {
+        display: none !important; visibility: hidden !important;
+    }
+    /* Override Wizard/Step containers (necessary from previous debug) */
+    #wizard { display: none !important; } /* Hide the wizard container itself */
+    .wizard-step { display: none !important; } /* Hide all steps */
+    #step-4 { display: block !important; visibility: visible !important; overflow: visible !important; position: static !important; opacity: 1 !important; transform: none !important; padding: 0 !important; margin: 0 !important; background: none !important; width: auto !important; height: auto !important; } /* Show only step 4 */
+
+    /* Ensure results container is visible */
+    #results { display: block !important; visibility: visible !important; margin: 0; padding: 0; border: none; width: 100%; overflow: visible !important; }
+
+    /* Invoice container styling */
+    .invoice {
+        visibility: visible !important; display: block !important; width: 100% !important; max-width: 100% !important;
+        margin: 0 !important; padding: 0 !important; border: none !important; box-shadow: none !important;
+        background: white !important; color: black !important; border-radius: 0 !important;
+        font-size: 10pt !important; position: static !important; overflow: visible !important;
+    }
+    /* Ensure invoice children are visible */
+    .invoice > *, .invoice h1, .invoice h2, .invoice h3, .invoice p, .invoice table, .invoice th, .invoice td { visibility: visible !important; color: black !important; background: none !important; }
+
+    /* Invoice Header */
+    .invoice-header { text-align: center; border-bottom: 2px solid black !important; padding-bottom: 0.8em !important; margin-bottom: 1.5em !important; }
+    .invoice-header img.invoice-logo { display: block !important; max-height: 60px; margin: 0 auto 0.5em auto; filter: grayscale(100%); } /* Grayscale logo */
+    .invoice-header h1 { font-size: 16pt !important; font-weight: bold !important; margin-bottom: 0.1em !important; }
+    .invoice-header p { font-size: 9pt !important; margin: 0.2em 0 !important; }
+
+    /* Section Titles */
+    .invoice h2, .invoice h3 { font-size: 12pt !important; font-weight: bold !important; margin-top: 1.2em !important; margin-bottom: 0.6em !important; border-bottom: 1px solid #666 !important; padding-bottom: 0.2em !important; text-align: left !important; page-break-after: avoid !important; }
+    .invoice h2:first-of-type, .invoice h3:first-of-type { margin-top: 0 !important; }
+
+    /* Table Styling */
+    .invoice table { width: 100% !important; border-collapse: collapse !important; margin-bottom: 1.5em !important; font-size: 9pt !important; border-spacing: 0 !important; page-break-inside: auto; }
+    .invoice th, .invoice td { border: 1px solid #ccc !important; padding: 5px 8px !important; text-align: left !important; vertical-align: top !important; background: white !important; box-shadow: none !important; }
+    .invoice thead th { background-color: #eee !important; font-weight: bold !important; border-bottom: 1px solid #999 !important; page-break-inside: avoid !important; }
+    .invoice tbody tr { page-break-inside: avoid !important; }
+    .invoice .details-table td:first-child { text-align: center !important; }
+    .invoice .details-table td:nth-child(n+5) { text-align: right !important; }
+    .invoice .summary-table .table-value { text-align: right !important; font-weight: normal !important; }
+    .invoice .details-table td:last-child { font-weight: 600 !important; }
+    .invoice .summary-table .table-label { font-weight: normal !important; width: 70%; border-right: none !important; }
+    .invoice .summary-table .table-value { border-left: none !important; }
+
+    /* Totals Row */
+    .invoice tfoot { border-top: none !important; }
+    .invoice .summary-table tfoot tr { page-break-inside: avoid !important; }
+    .invoice .total-row { background-color: white !important; border-top: 2px solid black !important; }
+    .invoice .total-row td { font-weight: bold !important; font-size: 11pt !important; border: none !important; border-top: 2px solid black !important; padding: 6px 8px !important; }
+    .invoice .total-row .table-label { text-align: right !important; width: auto !important; padding-right: 1em; }
+    .invoice .total-row .table-value { text-align: right !important; }
+
+    /* Footer */
+    .estimate-footer { text-align: center !important; margin-top: 2em !important; padding-top: 1em !important; border-top: 1px solid #ccc !important; font-size: 8pt !important; color: #333 !important; page-break-before: auto; }
+
+    /* Internal Details Printing */
+    #internalDetails:not(.print-section) { display: none !important; }
+    #internalDetails.print-section { display: block !important; margin-top: 1.5em !important; padding: 1em !important; border: 1px solid #ccc !important; page-break-before: auto; background: #f8f8f8 !important; }
+    #internalDetails.print-section h3 { font-size: 11pt !important; margin-bottom: 0.5em !important; }
+    #internalDetails.print-section table { font-size: 9pt !important; margin-bottom: 0.5em !important; }
+    #internalDetails.print-section td { border: 1px solid #ddd !important; padding: 4px 6px !important; background: white !important; }
+    #toggleDetailsBtn { display: none !important; } /* Hide toggle button in print */
+
+    /* Ensure errors are not printed */
+    .invoice-error, .invoice-loading { display: none !important; }
+}
