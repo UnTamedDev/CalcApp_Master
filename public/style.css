@@ -435,29 +435,24 @@ small { display: block; font-size: 0.8em; color: var(--fg); opacity: 0.8; margin
     .invoice table {
         display: table !important; width: 100% !important; border-collapse: collapse !important;
         margin-bottom: 1.5em !important; font-size: 9pt !important; border-spacing: 0 !important;
-        page-break-inside: auto; table-layout: fixed !important; /* Use fixed layout */
+        page-break-inside: auto; table-layout: auto !important; /* Change to auto layout */
     }
     .invoice table thead { display: table-header-group !important; }
     .invoice table tbody { display: table-row-group !important; }
     .invoice table tr { display: table-row !important; page-break-inside: avoid !important; }
     .invoice thead th { background-color: #eee !important; font-weight: bold !important; border-bottom: 1px solid #999 !important; }
 
-    /* Assign widths & alignment for print columns (Adjust based on Contractor table structure if different) */
-    /* Example based on UF version - VERIFY if columns are the same */
-      .invoice .details-table th:nth-child(1), .invoice .details-table td:nth-child(1) { width: 6%; text-align: center !important;} /* # or similar */
-      .invoice .details-table th:nth-child(2), .invoice .details-table td:nth-child(2) { width: 18%; text-align: left !important;} /* Col 2 */
-      .invoice .details-table th:nth-child(3), .invoice .details-table td:nth-child(3) { width: 18%; text-align: left !important;} /* Col 3 */
-      .invoice .details-table th:nth-child(4), .invoice .details-table td:nth-child(4) { width: 15%; text-align: center !important;} /* Col 4 */
-      .invoice .details-table th:nth-child(5), .invoice .details-table td:nth-child(5) { width: 15%; text-align: center !important;} /* Col 5 */
-      .invoice .details-table th:nth-child(6), .invoice .details-table td:nth-child(6) { width: 13%; text-align: center !important;} /* Col 6 */
-      .invoice .details-table th:nth-child(7), .invoice .details-table td:nth-child(7) { width: 15%; text-align: right !important; font-weight: 600 !important;} /* Col 7 / Cost */
-      /* Add rules for other tables like summary if needed */
-      .invoice .summary-table { display: table !important; }
-      .invoice .summary-table tbody { display: table-row-group !important; }
-      .invoice .summary-table tr { display: table-row !important; }
-      .invoice .summary-table td { display: table-cell !important; }
-      .invoice .summary-table .table-label { font-weight: normal !important; width: 70%; border-right: none !important; text-align: left !important; }
-      .invoice .summary-table .table-value { border-left: none !important; text-align: right !important; font-weight: normal !important; }
+    /* Align specific columns (adjust widths removed, using auto layout) */
+     .invoice .details-table td:nth-child(1) { text-align: center !important;} /* # */
+     .invoice .details-table td:nth-child(n+4):nth-child(-n+6) { text-align: center !important;} /* Center Finish, HxW, Area */
+     .invoice .details-table td:nth-child(7) { text-align: right !important; font-weight: 600 !important;} /* Cost */
+     /* Summary Table */
+     .invoice .summary-table { display: table !important; }
+     .invoice .summary-table tbody { display: table-row-group !important; }
+     .invoice .summary-table tr { display: table-row !important; }
+     .invoice .summary-table td { display: table-cell !important; }
+     .invoice .summary-table .table-label { font-weight: normal !important; width: 70%; border-right: none !important; text-align: left !important; }
+     .invoice .summary-table .table-value { border-left: none !important; text-align: right !important; font-weight: normal !important; }
 
     /* Totals Row */
     .invoice tfoot { border-top: none !important; display: table-footer-group !important;}
@@ -470,11 +465,14 @@ small { display: block; font-size: 0.8em; color: var(--fg); opacity: 0.8; margin
     /* Footer */
     .estimate-footer { text-align: center !important; margin-top: 2em !important; padding-top: 1em !important; border-top: 1px solid #ccc !important; font-size: 8pt !important; color: #333 !important; page-break-before: auto; }
 
-    /* Internal Details Printing (Keep existing logic) */
+    /* Internal Details Printing */
     #internalDetails.print-section { display: block !important; margin-top: 1.5em !important; padding: 1em !important; border: 1px solid #ccc !important; page-break-before: auto; background: #f8f8f8 !important; }
     #internalDetails.print-section h3 { font-size: 11pt !important; margin-bottom: 0.5em !important; }
-    #internalDetails.print-section table { font-size: 9pt !important; margin-bottom: 0.5em !important; }
+    #internalDetails.print-section table { font-size: 9pt !important; margin-bottom: 0.5em !important; table-layout: auto !important; }
     #internalDetails.print-section td { border: 1px solid #ddd !important; padding: 4px 6px !important; background: white !important; }
+    #internalDetails.print-section td:first-child { text-align: left !important; } /* Label left */
+    #internalDetails.print-section td:last-child { text-align: right !important; } /* Value right */
+
 
     /* Ensure errors/loading are not printed */
     .invoice-error, .invoice-loading { display: none !important; }
