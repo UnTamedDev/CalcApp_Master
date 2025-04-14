@@ -353,6 +353,11 @@ small { display: block; font-size: 0.8em; color: var(--fg); opacity: 0.8; margin
 }
 
 /* Print Styles (Ink-Saving, Plain - Final) */
+/* --- FILE: public/style.css (CONTRACTOR VERSION) --- */
+
+/* ... (Keep all existing styles ABOVE @media print) ... */
+
+/* Print Styles (Ink-Saving, Plain - CONTRACTOR VERSION FINAL) */
 @media print {
     /* Basic page setup */
     @page { size: A4; margin: 1cm; }
@@ -362,69 +367,115 @@ small { display: block; font-size: 0.8em; color: var(--fg); opacity: 0.8; margin
         -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;
         height: auto !important; width: auto !important; overflow: visible !important;
     }
-    /* Hide unwanted elements */
-    header, #instructions, #exampleImage, #calcForm, #printButtonContainer, #formActions button#clearAllBtn, .toggle-details-btn, #toggleInstructionsContainer, button.remove-button, #addSectionBtn, #togglePriceSetupBtn, #themeToggleBtn, small, #mainConfigRow, #otherPartsContainer, #roughEstimateContainer, #priceSetupContainer {
-        display: none !important; visibility: hidden !important;
+
+    /* --- Hide ALL non-invoice elements explicitly --- */
+    header, #toggleInstructionsContainer, #instructions, #exampleImage,
+    #calcForm > *:not(#results), /* Hide direct children of form except results */
+    #roughEstimateContainer, #mainConfigRow, #priceSetupContainer, #otherPartsContainer, /* Explicitly hide form sections */
+    #formActions, #printButtonContainer, #themeToggleBtn, small, button, input, select,
+    #togglePriceSetupBtn, #toggleInstructionsBtn, .toggle-details-btn, /* Hide toggle buttons */
+    #internalDetails:not(.print-section) /* Hide internal details UNLESS marked for print */
+     {
+        display: none !important;
+        visibility: hidden !important;
     }
-    /* Override Wizard/Step containers (necessary from previous debug) */
-    #wizard { display: none !important; } /* Hide the wizard container itself */
-    .wizard-step { display: none !important; } /* Hide all steps */
-    #step-4 { display: block !important; visibility: visible !important; overflow: visible !important; position: static !important; opacity: 1 !important; transform: none !important; padding: 0 !important; margin: 0 !important; background: none !important; width: auto !important; height: auto !important; } /* Show only step 4 */
 
-    /* Ensure results container is visible */
-    #results { display: block !important; visibility: visible !important; margin: 0; padding: 0; border: none; width: 100%; overflow: visible !important; }
+    /* Ensure Results container IS visible */
+    #results {
+        display: block !important; visibility: visible !important; margin: 0 !important; padding: 0 !important;
+        border: none !important; width: 100% !important; overflow: visible !important;
+        position: static !important; /* Ensure static position */
+    }
 
-    /* Invoice container styling */
+    /* Invoice container styling - Plain look */
     .invoice {
         visibility: visible !important; display: block !important; width: 100% !important; max-width: 100% !important;
-        margin: 0 !important; padding: 0 !important; border: none !important; box-shadow: none !important;
-        background: white !important; color: black !important; border-radius: 0 !important;
-        font-size: 10pt !important; position: static !important; overflow: visible !important;
+        margin: 0 !important; padding: 0 !important; /* No padding on wrapper */
+        border: none !important; box-shadow: none !important; background: white !important;
+        color: black !important; border-radius: 0 !important; font-size: 10pt !important;
+        position: static !important; overflow: visible !important;
     }
-    /* Ensure invoice children are visible */
-    .invoice > *, .invoice h1, .invoice h2, .invoice h3, .invoice p, .invoice table, .invoice th, .invoice td { visibility: visible !important; color: black !important; background: none !important; }
+    /* Ensure invoice direct children are visible */
+    .invoice > * { visibility: visible !important; color: black !important; background: none !important; }
 
     /* Invoice Header */
-    .invoice-header { text-align: center; border-bottom: 2px solid black !important; padding-bottom: 0.8em !important; margin-bottom: 1.5em !important; }
-    .invoice-header img.invoice-logo { display: block !important; max-height: 60px; margin: 0 auto 0.5em auto; filter: grayscale(100%); } /* Grayscale logo */
+    .invoice-header {
+        text-align: center; border-bottom: 2px solid black !important;
+        padding-bottom: 0.8em !important; margin-bottom: 1.5em !important;
+    }
+    .invoice-header img.invoice-logo { display: block !important; max-height: 60px; margin: 0 auto 0.5em auto; filter: grayscale(100%); }
     .invoice-header h1 { font-size: 16pt !important; font-weight: bold !important; margin-bottom: 0.1em !important; }
     .invoice-header p { font-size: 9pt !important; margin: 0.2em 0 !important; }
 
     /* Section Titles */
-    .invoice h2, .invoice h3 { font-size: 12pt !important; font-weight: bold !important; margin-top: 1.2em !important; margin-bottom: 0.6em !important; border-bottom: 1px solid #666 !important; padding-bottom: 0.2em !important; text-align: left !important; page-break-after: avoid !important; }
+    .invoice h2, .invoice h3 {
+        font-size: 12pt !important; font-weight: bold !important; margin-top: 1.2em !important;
+        margin-bottom: 0.6em !important; border-bottom: 1px solid #666 !important;
+        padding-bottom: 0.2em !important; text-align: left !important; page-break-after: avoid !important;
+    }
     .invoice h2:first-of-type, .invoice h3:first-of-type { margin-top: 0 !important; }
 
-    /* Table Styling */
-    .invoice table { width: 100% !important; border-collapse: collapse !important; margin-bottom: 1.5em !important; font-size: 9pt !important; border-spacing: 0 !important; page-break-inside: auto; }
-    .invoice th, .invoice td { border: 1px solid #ccc !important; padding: 5px 8px !important; text-align: left !important; vertical-align: top !important; background: white !important; box-shadow: none !important; }
-    .invoice thead th { background-color: #eee !important; font-weight: bold !important; border-bottom: 1px solid #999 !important; page-break-inside: avoid !important; }
-    .invoice tbody tr { page-break-inside: avoid !important; }
-    .invoice .details-table td:first-child { text-align: center !important; }
-    .invoice .details-table td:nth-child(n+5) { text-align: right !important; }
-    .invoice .summary-table .table-value { text-align: right !important; font-weight: normal !important; }
-    .invoice .details-table td:last-child { font-weight: 600 !important; }
-    .invoice .summary-table .table-label { font-weight: normal !important; width: 70%; border-right: none !important; }
-    .invoice .summary-table .table-value { border-left: none !important; }
+    /* --- PRINT TABLE CELL & PSEUDO-ELEMENT RESET --- */
+    .invoice table td,
+    .invoice table th { /* Apply base print cell styles FIRST */
+        display: table-cell !important; visibility: visible !important;
+        border: 1px solid #ccc !important; padding: 5px 8px !important; /* Standard print padding */
+        text-align: left !important; /* Default left align */
+        vertical-align: top !important; color: black !important; background: white !important;
+        box-shadow: none !important; word-wrap: break-word; position: static !important;
+    }
+    .invoice table td::before, .invoice table th::before { /* Hide ALL ::before */
+        content: none !important; display: none !important; padding: 0 !important;
+        margin: 0 !important; position: static !important; width: auto !important; left: auto !important;
+    }
+    /* --- END NEW PRINT RESET --- */
+
+
+    /* --- Print Table Layout & Alignment --- */
+    .invoice table {
+        display: table !important; width: 100% !important; border-collapse: collapse !important;
+        margin-bottom: 1.5em !important; font-size: 9pt !important; border-spacing: 0 !important;
+        page-break-inside: auto; table-layout: fixed !important; /* Use fixed layout */
+    }
+    .invoice table thead { display: table-header-group !important; }
+    .invoice table tbody { display: table-row-group !important; }
+    .invoice table tr { display: table-row !important; page-break-inside: avoid !important; }
+    .invoice thead th { background-color: #eee !important; font-weight: bold !important; border-bottom: 1px solid #999 !important; }
+
+    /* Assign widths & alignment for print columns (Adjust based on Contractor table structure if different) */
+    /* Example based on UF version - VERIFY if columns are the same */
+      .invoice .details-table th:nth-child(1), .invoice .details-table td:nth-child(1) { width: 6%; text-align: center !important;} /* # or similar */
+      .invoice .details-table th:nth-child(2), .invoice .details-table td:nth-child(2) { width: 18%; text-align: left !important;} /* Col 2 */
+      .invoice .details-table th:nth-child(3), .invoice .details-table td:nth-child(3) { width: 18%; text-align: left !important;} /* Col 3 */
+      .invoice .details-table th:nth-child(4), .invoice .details-table td:nth-child(4) { width: 15%; text-align: center !important;} /* Col 4 */
+      .invoice .details-table th:nth-child(5), .invoice .details-table td:nth-child(5) { width: 15%; text-align: center !important;} /* Col 5 */
+      .invoice .details-table th:nth-child(6), .invoice .details-table td:nth-child(6) { width: 13%; text-align: center !important;} /* Col 6 */
+      .invoice .details-table th:nth-child(7), .invoice .details-table td:nth-child(7) { width: 15%; text-align: right !important; font-weight: 600 !important;} /* Col 7 / Cost */
+      /* Add rules for other tables like summary if needed */
+      .invoice .summary-table { display: table !important; }
+      .invoice .summary-table tbody { display: table-row-group !important; }
+      .invoice .summary-table tr { display: table-row !important; }
+      .invoice .summary-table td { display: table-cell !important; }
+      .invoice .summary-table .table-label { font-weight: normal !important; width: 70%; border-right: none !important; text-align: left !important; }
+      .invoice .summary-table .table-value { border-left: none !important; text-align: right !important; font-weight: normal !important; }
 
     /* Totals Row */
-    .invoice tfoot { border-top: none !important; }
-    .invoice .summary-table tfoot tr { page-break-inside: avoid !important; }
+    .invoice tfoot { border-top: none !important; display: table-footer-group !important;}
+    .invoice .summary-table tfoot tr { page-break-inside: avoid !important; display: table-row !important; }
     .invoice .total-row { background-color: white !important; border-top: 2px solid black !important; }
-    .invoice .total-row td { font-weight: bold !important; font-size: 11pt !important; border: none !important; border-top: 2px solid black !important; padding: 6px 8px !important; }
+    .invoice .total-row td { font-weight: bold !important; font-size: 11pt !important; border: none !important; border-top: 2px solid black !important; padding: 6px 8px !important; color: black !important; display: table-cell !important; }
     .invoice .total-row .table-label { text-align: right !important; width: auto !important; padding-right: 1em; }
     .invoice .total-row .table-value { text-align: right !important; }
 
     /* Footer */
     .estimate-footer { text-align: center !important; margin-top: 2em !important; padding-top: 1em !important; border-top: 1px solid #ccc !important; font-size: 8pt !important; color: #333 !important; page-break-before: auto; }
 
-    /* Internal Details Printing */
-    #internalDetails:not(.print-section) { display: none !important; }
+    /* Internal Details Printing (Keep existing logic) */
     #internalDetails.print-section { display: block !important; margin-top: 1.5em !important; padding: 1em !important; border: 1px solid #ccc !important; page-break-before: auto; background: #f8f8f8 !important; }
     #internalDetails.print-section h3 { font-size: 11pt !important; margin-bottom: 0.5em !important; }
     #internalDetails.print-section table { font-size: 9pt !important; margin-bottom: 0.5em !important; }
     #internalDetails.print-section td { border: 1px solid #ddd !important; padding: 4px 6px !important; background: white !important; }
-    #toggleDetailsBtn { display: none !important; } /* Hide toggle button in print */
 
-    /* Ensure errors are not printed */
+    /* Ensure errors/loading are not printed */
     .invoice-error, .invoice-loading { display: none !important; }
 }
