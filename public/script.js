@@ -1,4 +1,4 @@
-// --- FILE: public/script.js (CONTRACTOR VERSION - DEFINITIVELY FIXING handleCalculate) ---
+// --- FILE: public/script.js (CONTRACTOR VERSION - FINAL w/ Combined Print & Defined handleCalculate) ---
 
 console.log("Contractor script.js: File loading...");
 
@@ -133,14 +133,11 @@ function displayResults(resultData) {
 
 /** Handle calculation form submission - DEFINED HERE */
 async function handleCalculate(e) {
-    if (e) e.preventDefault(); // Prevent default form submission if called by event
+    if (e) e.preventDefault();
     console.log("[Client Contractor] handleCalculate started.");
-    // Show loading indicator
-    resultsDiv.innerHTML = '<div class="invoice-loading"><p>Calculating...</p></div>';
-    if(printBtnContainer) printBtnContainer.style.display = 'none';
+    resultsDiv.innerHTML = '<div class="invoice-loading"><p>Calculating...</p></div>'; if(printBtnContainer) printBtnContainer.style.display = 'none';
     try {
         updateTotals(); console.log("[Client Contractor] Totals updated for submit.");
-        // --- Build Contractor Payload ---
         const sections = []; let hasInvalidSection = false;
         document.querySelectorAll('#sectionsContainer .section').forEach(sec => { const heightInput = sec.querySelector('input[name="sectionHeight"]'); const widthInput = sec.querySelector('input[name="sectionWidth"]'); const height = parseFloat(heightInput?.value) || 0; const width = parseFloat(widthInput?.value) || 0; if(heightInput) heightInput.style.border = ''; if(widthInput) widthInput.style.border = ''; if (height <= 0 || width <= 0) { console.warn(`Skipping section ${parseInt(sec.dataset.index) + 1}.`); if(heightInput) heightInput.style.border = '1px solid red'; if(widthInput) widthInput.style.border = '1px solid red'; hasInvalidSection = true; return; } sections.push({ doorStyle: sec.querySelector('select[name="sectionDoorStyle"]')?.value || '', drawerStyle: sec.querySelector('select[name="sectionDrawerStyle"]')?.value || '', finish: sec.querySelector('select[name="sectionFinish"]')?.value || '', height: height, width: width }); });
         if (hasInvalidSection) { throw new Error("Some sections have invalid dimensions (Height and Width must be > 0). Please correct them."); }
@@ -166,19 +163,27 @@ async function printViaIframe() {
     const includeInternalDetails = internalDetailsDiv && internalDetailsDiv.classList.contains('print-section');
     console.log("[Client Contractor] Include internal details in iframe print:", includeInternalDetails);
     const printFrame = document.createElement('iframe');
-    printFrame.style.position = 'absolute'; printFrame.style.width = '0'; printFrame.style.height = '0'; printFrame.style.border = '0'; printFrame.style.visibility = 'hidden'; printFrame.setAttribute('aria-hidden', 'true');
+    printFrame.style.position = 'absolute'; printFrame.style.width = '0'; printFrame.style.height = '0'; printFrame.style.border = '0';
+    printFrame.style.visibility = 'hidden'; printFrame.setAttribute('aria-hidden', 'true');
+    printFrame.setAttribute('srcdoc', `<!DOCTYPE html><html><head><title>-</title></head><body></body></html>`); // Initial empty srcdoc
+
     document.body.appendChild(printFrame);
-    try {
-        const frameDoc = printFrame.contentWindow.document;
-        frameDoc.open();
-        frameDoc.write(`<!DOCTYPE html><html><head><title>Print Estimate - nuDoors Contractor</title><style>
+
+    printFrame.onload = () => { // Wait for initial load
+        console.log("[Client Contractor] iframe initial load complete. Writing content...");
+        try {
+            const frameDoc = printFrame.contentWindow.document;
+            frameDoc.open();
+            frameDoc.write(`<!DOCTYPE html><html><head><title>Print Estimate - nuDoors Contractor</title><style>
 /* --- EMBEDDED PRINT STYLES --- */
-@media print { @page{size:A4;margin:1cm}body{background:#fff!important;color:#000!important;margin:0!important;padding:0!important;font-family:Arial,sans-serif!important;font-size:10pt!important;line-height:1.3;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;height:auto!important;width:auto!important;overflow:visible!important}header,#toggleInstructionsContainer,#instructions,#exampleImage,#calcForm>*:not(#results),#roughEstimateContainer,#mainConfigRow,#priceSetupContainer,#otherPartsContainer,#formActions,#printButtonContainer,#themeToggleBtn,small,button,input,select,#togglePriceSetupBtn,#toggleInstructionsBtn,.toggle-details-btn,#internalDetails:not(.print-section){display:none!important;visibility:hidden!important}#results{display:block!important;visibility:visible!important;margin:0!important;padding:0!important;border:none!important;width:100%!important;overflow:visible!important;position:static!important}#wizard{display:block!important;visibility:visible!important;overflow:visible!important;position:static!important;box-shadow:none!important;border:none!important;background:0 0!important;min-height:auto!important;height:auto!important;width:auto!important;margin:0!important;padding:0!important}.wizard-step{display:none!important;visibility:hidden!important}#step-4{display:block!important;visibility:visible!important;overflow:visible!important;position:static!important;opacity:1!important;transform:none!important;padding:0!important;margin:0!important;background:0 0!important;width:auto!important;height:auto!important}.invoice{visibility:visible!important;display:block!important;width:100%!important;max-width:100%!important;margin:0!important;padding:0!important;border:none!important;box-shadow:none!important;background:#fff!important;color:#000!important;border-radius:0!important;font-size:10pt!important;position:static!important;overflow:visible!important}.invoice>*{visibility:visible!important;color:#000!important;background:0 0!important}.invoice-header{text-align:center;border-bottom:2px solid #000!important;padding-bottom:.8em!important;margin-bottom:1.5em!important}.invoice-header img.invoice-logo{display:block!important;max-height:60px;margin:0 auto .5em;filter:grayscale(100%)}.invoice-header h1{font-size:16pt!important;font-weight:700!important;margin-bottom:.1em!important}.invoice-header p{font-size:9pt!important;margin:.2em 0!important}.invoice h2,.invoice h3{font-size:12pt!important;font-weight:700!important;margin-top:1.2em!important;margin-bottom:.6em!important;border-bottom:1px solid #666!important;padding-bottom:.2em!important;text-align:left!important;page-break-after:avoid!important}.invoice h2:first-of-type,.invoice h3:first-of-type{margin-top:0!important}.invoice table td,.invoice table th{display:table-cell!important;visibility:visible!important;border:1px solid #ccc!important;padding:5px 8px!important;text-align:left!important;vertical-align:top!important;color:#000!important;background:#fff!important;box-shadow:none!important;word-wrap:break-word;position:static!important}.invoice table td::before,.invoice table th::before{content:none!important;display:none!important;padding:0!important;margin:0!important;position:static!important;width:auto!important;left:auto!important}.invoice table{display:table!important;width:100%!important;border-collapse:collapse!important;margin-bottom:1.5em!important;font-size:9pt!important;border-spacing:0!important;page-break-inside:auto;table-layout:auto!important}.invoice table thead{display:table-header-group!important}.invoice table tbody{display:table-row-group!important}.invoice table tr{display:table-row!important;page-break-inside:avoid!important}.invoice thead th{background-color:#eee!important;font-weight:700!important;border-bottom:1px solid #999!important}.invoice .details-table td:first-child{text-align:left!important}.invoice .details-table td:last-child{text-align:right!important}.invoice .summary-table .table-label{text-align:left!important;font-weight:400!important;width:70%;border-right:none!important}.invoice .summary-table .table-value{text-align:right!important;font-weight:400!important;border-left:none!important}.invoice tfoot{border-top:none!important;display:table-footer-group!important}.invoice .summary-table tfoot tr{page-break-inside:avoid!important;display:table-row!important}.invoice .total-row{background-color:#fff!important;border-top:2px solid #000!important}.invoice .total-row td{font-weight:700!important;font-size:11pt!important;border:none!important;border-top:2px solid #000!important;padding:6px 8px!important;color:#000!important;display:table-cell!important}.invoice .total-row .table-label{text-align:right!important;width:auto!important;padding-right:1em}.invoice .total-row .table-value{text-align:right!important}.estimate-footer{text-align:center!important;margin-top:2em!important;padding-top:1em!important;border-top:1px solid #ccc!important;font-size:8pt!important;color:#333!important;page-break-before:auto}#internalDetails{display:none!important;visibility:hidden!important;height:0!important;overflow:hidden!important;margin:0!important;padding:0!important;border:none!important}#internalDetails.print-section{display:block!important;visibility:visible!important;height:auto!important;overflow:visible!important;margin-top:1.5em!important;padding:1em!important;border:1px solid #ccc!important;page-break-before:auto;background:#f8f8f8!important;color:#000!important}#internalDetails.print-section *{visibility:visible!important;color:#000!important;background:0 0!important}#internalDetails.print-section h3{font-size:11pt!important;margin-bottom:.5em!important;border-bottom:1px solid #666!important;padding-bottom:.2em!important;text-align:left!important;page-break-after:avoid!important}#internalDetails.print-section table{font-size:9pt!important;margin-bottom:.5em!important;table-layout:auto!important;display:table!important;width:100%!important;border-collapse:collapse!important;border-spacing:0!important;page-break-inside:auto}#internalDetails.print-section table tbody{display:table-row-group!important}#internalDetails.print-section table tr{display:table-row!important;page-break-inside:avoid!important}#internalDetails.print-section table td{border:1px solid #ddd!important;padding:4px 6px!important;background:#fff!important;display:table-cell!important;visibility:visible!important;color:#000!important;text-align:left!important;vertical-align:top!important;position:static!important}#internalDetails.print-section table td::before{content:none!important;display:none!important}#internalDetails.print-section td:first-child{text-align:left!important;width:70%}#internalDetails.print-section td:last-child{text-align:right!important;width:30%}.invoice-error,.invoice-loading{display:none!important}}
+@media print { @page{size:A4;margin:1cm}body{background:#fff!important;color:#000!important;margin:0!important;padding:0!important;font-family:Arial,sans-serif!important;font-size:10pt!important;line-height:1.3;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;height:auto!important;width:auto!important;overflow:visible!important}header,#toggleInstructionsContainer,#instructions,#exampleImage,#calcForm>*:not(#results),#roughEstimateContainer,#mainConfigRow,#priceSetupContainer,#otherPartsContainer,#formActions,#printButtonContainer,#themeToggleBtn,small,button,input,select,#togglePriceSetupBtn,#toggleInstructionsBtn,.toggle-details-btn{display:none!important;visibility:hidden!important}#results{display:block!important;visibility:visible!important;margin:0!important;padding:0!important;border:none!important;width:100%!important;overflow:visible!important;position:static!important}#wizard{display:block!important;visibility:visible!important;overflow:visible!important;position:static!important;box-shadow:none!important;border:none!important;background:0 0!important;min-height:auto!important;height:auto!important;width:auto!important;margin:0!important;padding:0!important}.wizard-step{display:none!important;visibility:hidden!important}#step-4{display:block!important;visibility:visible!important;overflow:visible!important;position:static!important;opacity:1!important;transform:none!important;padding:0!important;margin:0!important;background:0 0!important;width:auto!important;height:auto!important}.invoice{visibility:visible!important;display:block!important;width:100%!important;max-width:100%!important;margin:0!important;padding:0!important;border:none!important;box-shadow:none!important;background:#fff!important;color:#000!important;border-radius:0!important;font-size:10pt!important;position:static!important;overflow:visible!important}.invoice>*{visibility:visible!important;color:#000!important;background:0 0!important}.invoice-header{text-align:center;border-bottom:2px solid #000!important;padding-bottom:.8em!important;margin-bottom:1.5em!important}.invoice-header img.invoice-logo{display:block!important;max-height:60px;margin:0 auto .5em;filter:grayscale(100%)}.invoice-header h1{font-size:16pt!important;font-weight:700!important;margin-bottom:.1em!important}.invoice-header p{font-size:9pt!important;margin:.2em 0!important}.invoice h2,.invoice h3{font-size:12pt!important;font-weight:700!important;margin-top:1.2em!important;margin-bottom:.6em!important;border-bottom:1px solid #666!important;padding-bottom:.2em!important;text-align:left!important;page-break-after:avoid!important}.invoice h2:first-of-type,.invoice h3:first-of-type{margin-top:0!important}.invoice table td,.invoice table th{display:table-cell!important;visibility:visible!important;border:1px solid #ccc!important;padding:5px 8px!important;text-align:left!important;vertical-align:top!important;color:#000!important;background:#fff!important;box-shadow:none!important;word-wrap:break-word;position:static!important}.invoice table td::before,.invoice table th::before{content:none!important;display:none!important;padding:0!important;margin:0!important;position:static!important;width:auto!important;left:auto!important}.invoice table{display:table!important;width:100%!important;border-collapse:collapse!important;margin-bottom:1.5em!important;font-size:9pt!important;border-spacing:0!important;page-break-inside:auto;table-layout:auto!important}.invoice table thead{display:table-header-group!important}.invoice table tbody{display:table-row-group!important}.invoice table tr{display:table-row!important;page-break-inside:avoid!important}.invoice thead th{background-color:#eee!important;font-weight:700!important;border-bottom:1px solid #999!important}.invoice .details-table td:first-child{text-align:left!important}.invoice .details-table td:last-child{text-align:right!important}.invoice .summary-table .table-label{text-align:left!important;font-weight:400!important;width:70%;border-right:none!important}.invoice .summary-table .table-value{text-align:right!important;font-weight:400!important;border-left:none!important}.invoice tfoot{border-top:none!important;display:table-footer-group!important}.invoice .summary-table tfoot tr{page-break-inside:avoid!important;display:table-row!important}.invoice .total-row{background-color:#fff!important;border-top:2px solid #000!important}.invoice .total-row td{font-weight:700!important;font-size:11pt!important;border:none!important;border-top:2px solid #000!important;padding:6px 8px!important;color:#000!important;display:table-cell!important}.invoice .total-row .table-label{text-align:right!important;width:auto!important;padding-right:1em}.invoice .total-row .table-value{text-align:right!important}.estimate-footer{text-align:center!important;margin-top:2em!important;padding-top:1em!important;border-top:1px solid #ccc!important;font-size:8pt!important;color:#333!important;page-break-before:auto}#internalDetails{display:none!important;visibility:hidden!important;height:0!important;overflow:hidden!important;margin:0!important;padding:0!important;border:none!important}#internalDetails.print-section{display:block!important;visibility:visible!important;height:auto!important;overflow:visible!important;margin-top:1.5em!important;padding:1em!important;border:1px solid #ccc!important;page-break-before:auto;background:#f8f8f8!important;color:#000!important}#internalDetails.print-section *{visibility:visible!important;color:#000!important;background:0 0!important}#internalDetails.print-section h3{font-size:11pt!important;margin-bottom:.5em!important;border-bottom:1px solid #666!important;padding-bottom:.2em!important;text-align:left!important;page-break-after:avoid!important}#internalDetails.print-section table{font-size:9pt!important;margin-bottom:.5em!important;table-layout:auto!important;display:table!important;width:100%!important;border-collapse:collapse!important;border-spacing:0!important;page-break-inside:auto}#internalDetails.print-section table tbody{display:table-row-group!important}#internalDetails.print-section table tr{display:table-row!important;page-break-inside:avoid!important}#internalDetails.print-section table td{border:1px solid #ddd!important;padding:4px 6px!important;background:#fff!important;display:table-cell!important;visibility:visible!important;color:#000!important;text-align:left!important;vertical-align:top!important;position:static!important}#internalDetails.print-section table td::before{content:none!important;display:none!important}#internalDetails.print-section td:first-child{text-align:left!important;width:70%}#internalDetails.print-section td:last-child{text-align:right!important;width:30%}.invoice-error,.invoice-loading{display:none!important}}
 /* Minimal Base Styles */ body{font-family:Arial,sans-serif;font-size:10pt;line-height:1.3;color:#000;margin:0;padding:0}h1,h2,h3{margin:1em 0 .5em;padding:0}p{margin:0 0 .5em;padding:0}table{border-collapse:collapse;width:100%;margin-bottom:1em;font-size:9pt}th,td{border:1px solid #ccc;padding:5px 8px;text-align:left;vertical-align:top}th{background-color:#eee;font-weight:700}tfoot{font-weight:700}.total-row td{border-top:2px solid #000;font-size:11pt}.invoice{margin:0;padding:0}.details-section{margin-top:1.5em;padding:1em;border:1px solid #ccc;background:#f8f8f8}.details-section h3{font-size:11pt;margin-bottom:.5em}.details-section table td{border:1px solid #ddd;padding:4px 6px}.details-section td:last-child{text-align:right}
             </style></head><body>${invoiceElement.outerHTML}</body></html>`);
         frameDoc.close();
-        setTimeout(() => { try { printFrame.contentWindow.focus(); printFrame.contentWindow.print(); console.log('[Client Contractor] iframe print command issued.'); } catch(printError) { console.error('[Client Contractor] Error calling print on iframe:', printError); alert("An error occurred trying to print via iframe."); } finally { setTimeout(() => { if (printFrame.parentNode) { document.body.removeChild(printFrame); console.log('[Client Contractor] iframe removed.'); } }, 500); } }, 250);
-    } catch (error) { console.error('[Client Contractor] Error creating print iframe:', error); alert("An error occurred preparing the print view."); if (printFrame && printFrame.parentNode) { document.body.removeChild(printFrame); } }
+        setTimeout(() => { try { if (printFrame.contentWindow && printFrame.contentWindow.document.body.innerHTML.length > 0) { console.log('[Client Contractor] iframe content ready, printing...'); printFrame.contentWindow.focus(); printFrame.contentWindow.print(); console.log('[Client Contractor] iframe print command issued.'); } else { console.error('[Client Contractor] iframe content failed before print.'); alert("Error preparing print view."); } } catch(printError) { console.error('[Client Contractor] Error calling print on iframe:', printError); alert("An error occurred trying to print via iframe."); } finally { setTimeout(() => { if (printFrame.parentNode === document.body) { document.body.removeChild(printFrame); console.log('[Client Contractor] iframe removed.'); } }, 1000); } }, 350); // Delay before print
+    } catch (error) { console.error('[Client Contractor] Error creating print iframe:', error); alert("An error occurred preparing print view."); if (printFrame && printFrame.parentNode === document.body) { document.body.removeChild(printFrame); } }
+    }; // End onload
+    printFrame.onerror = (err) => { console.error("[Client Contractor] iframe onerror triggered:", err); alert("Failed to load print content."); if (printFrame.parentNode === document.body) { document.body.removeChild(printFrame); } };
 }
 
 /** Handles print request, trying execCommand first, then iframe */
@@ -204,40 +209,40 @@ function initializeWizard() {
     console.log("[Client Contractor] Initializing wizard UI listeners...");
     printEstimateBtn = document.getElementById('printEstimate'); // Assign here
 
+    // Add Console Log to check handleCalculate definition before attaching
+    console.log("[Client Contractor] Type of handleCalculate before attach:", typeof handleCalculate);
+    if (typeof handleCalculate !== 'function') {
+        console.error("FATAL: handleCalculate is NOT defined or not a function when trying to attach listener!");
+        // Optionally, disable the calculate button or show an error to the user
+        const calcBtn = document.getElementById('calculateBtn');
+        if(calcBtn) calcBtn.disabled = true;
+        alert("Critical Initialization Error: Calculation function is missing. Please reload.");
+        return; // Stop initialization
+    }
+    // Attach other listeners
     themeToggleBtn.addEventListener('click', handleThemeToggle);
     togglePriceSetupBtn.addEventListener('click', () => { const isCollapsed = priceSetupContainer.classList.toggle('collapsed'); togglePriceSetupBtn.textContent = isCollapsed ? 'Show' : 'Hide'; });
     toggleInstructionsBtn.addEventListener('click', () => { const isHidden = instructionsDiv.style.display === 'none'; instructionsDiv.style.display = isHidden ? 'block' : 'none'; toggleInstructionsBtn.textContent = isHidden ? 'Hide Directions' : 'Show Directions'; });
     addSectionBtn.addEventListener('click', () => { const index = sectionsContainer.children.length; sectionsContainer.appendChild(createRoughEstimateSection(index)); updateTotals(); });
     clearAllBtn.addEventListener('click', () => { console.log("[Client Contractor] Clear All clicked."); document.querySelectorAll('#roughEstimateContainer input, #roughEstimateContainer select, #otherPartsContainer input, #otherPartsContainer select').forEach(el => { if (el.closest('#priceSetupContainer')) return; if (el.type === 'number') el.value = el.getAttribute('value') || '0'; else if (el.type === 'text') el.value = ''; else if (el.tagName === 'SELECT') { if(el.name === 'calculateDisposal') { el.value = 'no'; } else { el.selectedIndex = 0; } } }); sectionsContainer.innerHTML = ''; for (let i = 0; i < 2; i++) { sectionsContainer.appendChild(createRoughEstimateSection(i)); } updateSectionIndices(); loadPricingSettings(); priceSetupContainer.classList.remove('collapsed'); togglePriceSetupBtn.textContent = 'Hide'; if (instructionsDiv) instructionsDiv.style.display = 'none'; toggleInstructionsBtn.textContent = 'Show Directions'; resultsDiv.innerHTML = ''; if (printBtnContainer) printBtnContainer.style.display = 'none'; updateTotals(); console.log("[Client Contractor] Clear All finished."); });
 
-    // Add Console Log right before attaching listener
-    console.log("[Client Contractor] Type of handleCalculate before attach:", typeof handleCalculate);
-    if (typeof handleCalculate !== 'function') {
-        console.error("FATAL: handleCalculate is NOT a function here!");
-        alert("Initialization Error: Calculation function not ready.");
-        return; // Stop initialization if handleCalculate is missing
-    }
-
     // Use submit event on the FORM, and call handleCalculate
-    calcForm.addEventListener('submit', handleCalculate); // CORRECTLY REFERENCING handleCalculate
+    calcForm.addEventListener('submit', handleCalculate);
 
     // --- Attach COMBINED Print Handler ---
     if (printEstimateBtn) {
-        printEstimateBtn.addEventListener('click', handlePrintRequest); // Attach NEW combined handler
+        printEstimateBtn.addEventListener('click', handlePrintRequest);
     } else {
         console.warn("[Client Contractor] Print Estimate button (#printEstimate) not found.");
     }
 
     console.log("[Client Contractor] Event listeners attached.");
-} // <--- End of initializeWizard
+}
 
 /** Initial setup when DOM is ready */
 function main() {
     console.log("[Client Contractor] DOMContentLoaded event fired.");
-    // --- Assign Global DOM References ---
     sectionsContainer = document.getElementById('sectionsContainer'); addSectionBtn = document.getElementById('addSectionBtn'); calcForm = document.getElementById('calcForm'); priceSetupContainer = document.getElementById('priceSetupContainer'); togglePriceSetupBtn = document.getElementById('togglePriceSetupBtn'); clearAllBtn = document.getElementById('clearAllBtn'); resultsDiv = document.getElementById('results'); printBtnContainer = document.getElementById('printButtonContainer'); instructionsDiv = document.getElementById('instructions'); toggleInstructionsBtn = document.getElementById('toggleInstructionsBtn'); themeToggleBtn = document.getElementById('themeToggleBtn');
-
-    // --- Check Essential Elements ---
     const criticalElements = [ sectionsContainer, addSectionBtn, calcForm, priceSetupContainer, togglePriceSetupBtn, clearAllBtn, resultsDiv, printBtnContainer, instructionsDiv, toggleInstructionsBtn, themeToggleBtn ];
     if (criticalElements.some(el => !el)) { console.error("CRITICAL ERROR: One or more essential HTML elements not found."); document.body.innerHTML = '<h1 style="color: red;">Error: UI failed to initialize.</h1>'; return; }
     console.log("[Client Contractor] Essential elements references obtained.");
@@ -245,18 +250,15 @@ function main() {
     loadInitialTheme();
     try { console.log("[Client Contractor] Loading settings..."); loadPricingSettings(); console.log("[Client Contractor] Settings loaded."); } catch (error) { console.error("Error during loadPricingSettings:", error); }
 
-    // --- Initialize Sections (start with 2) ---
     sectionsContainer.innerHTML = '';
     for (let i = 0; i < 2; i++) { sectionsContainer.appendChild(createRoughEstimateSection(i)); }
     updateSectionIndices(); updateTotals();
 
-    // Add Console Log right before calling initializeWizard
-    console.log("[Client Contractor] Type of handleCalculate before calling initializeWizard:", typeof handleCalculate);
-
-    initializeWizard(); // Initialize listeners AFTER elements exist
+    console.log("[Client Contractor] Type of handleCalculate before calling initializeWizard:", typeof handleCalculate); // Log type here too
+    initializeWizard();
 
     console.log("[Client Contractor] DOMContentLoaded setup complete.");
-} // End of main
+}
 
 // --- Run the main setup function ---
 document.addEventListener('DOMContentLoaded', main);
