@@ -129,10 +129,23 @@
             <p>Calculating...</p>
        </div>
   </div>
-  <!-- Print Button -->
-  <div id="printButtonContainer" style="display: none;">
-      <button type="button" id="printEstimate">Print Estimate</button>
+
+  <!-- Email & Print Container -->
+  <div id="outputActionsContainer" style="display: none; text-align: center; margin-top: 1.5em; padding: 0 1em;">
+      <!-- Email Section -->
+      <div id="emailEstimateContainer" style="margin-bottom: 1em; padding: 1em; background: var(--bg); box-shadow: var(--shadow-inset); border-radius: 0; display: flex; flex-wrap: wrap; gap: 1em; justify-content: center; align-items: center;">
+          <label for="clientEmailInput" style="margin-bottom: 0; flex-basis: 100%; text-align: center;">Email Estimate To Client:</label>
+          <input type="email" id="clientEmailInput" name="clientEmail" placeholder="Enter client's email address" style="flex: 1 1 250px; height: 40px; margin-top:0; border: 1px solid #ccc;">
+          <button type="button" id="sendEmailBtn" style="flex: 0 0 auto; height: 40px; margin-top: 0; padding: 0 1.5em;">Send Email</button>
+          <div id="emailStatus" style="flex-basis: 100%; text-align: center; min-height: 1.2em; font-size: 0.9em; margin-top: 0.5em;"></div>
+      </div>
+
+      <!-- Print Button -->
+      <div id="printButtonContainer">
+          <button type="button" id="printEstimate">Print / Save as PDF</button>
+      </div>
   </div>
+
 
   <!-- Link external Script -->
   <script src="script.js"></script>

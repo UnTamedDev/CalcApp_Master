@@ -358,6 +358,134 @@ small { display: block; font-size: 0.8em; color: var(--fg); opacity: 0.8; margin
 /* ... (Keep all existing styles ABOVE @media print) ... */
 
 /* Print Styles (Ink-Saving, Plain - CONTRACTOR VERSION FINAL) */
+/* Email & Print Actions Container */
+#outputActionsContainer {
+    max-width: 900px; /* Match wizard width */
+    margin: 1.5em auto; /* Center container */
+    text-align: center;
+    display: none; /* Hidden by default */
+    padding: 0 1em;
+}
+
+/* Email Section Specific Styles */
+#emailEstimateContainer {
+    margin-bottom: 1em;
+    padding: 1em 1.5em; /* More padding */
+    background: var(--container-bg); /* Use container background */
+    box-shadow: var(--shadow-inset);
+    border-radius: 0; /* Consistent with theme */
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8em 1em;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+#emailEstimateContainer label {
+    margin-bottom: 0;
+    flex-basis: 100%; /* Label full width */
+    text-align: center;
+    font-weight: 600; /* Bolder label */
+    padding: 0; /* Reset label padding */
+}
+#emailEstimateContainer input[type="email"] {
+    flex: 1 1 280px; /* Allow input to grow */
+    height: 42px; /* Match other inputs */
+    margin-top: 0;
+    /* Inherits other input styles, add specifics if needed */
+     border: 1px solid #ccc; /* Add border for visibility */
+     border-radius: 0; /* No radius */
+     background: white; /* Force white background */
+     color: black;
+     box-shadow: var(--shadow-light-inset-input); /* Use specific input shadow */
+}
+#emailEstimateContainer button#sendEmailBtn {
+    flex: 0 0 auto; /* Don't grow/shrink */
+    height: 42px;
+    margin-top: 0;
+    padding: 0 1.5em;
+    font-size: 0.95em;
+    background: var(--primary); /* Use primary color */
+    color: var(--bg);
+    box-shadow: var(--button-shadow);
+}
+#emailEstimateContainer button#sendEmailBtn:hover:not(:disabled) {
+    filter: brightness(1.1);
+}
+#emailEstimateContainer button#sendEmailBtn:active:not(:disabled) {
+    filter: brightness(0.9); box-shadow: var(--button-shadow-active);
+}
+#emailStatus {
+    flex-basis: 100%;
+    text-align: center;
+    min-height: 1.2em; /* Reserve space */
+    font-size: 0.9em;
+    margin-top: 0.5em;
+    color: var(--fg);
+    opacity: 0.9;
+}
+#emailStatus.success { color: #28a745; /* Green */ }
+#emailStatus.error { color: #dc3545; /* Red */ }
+
+/* Dark Theme Email Section */
+body[data-theme="dark"] #emailEstimateContainer {
+    background: var(--container-bg);
+    box-shadow: var(--shadow-dark-inset);
+}
+body[data-theme="dark"] #emailEstimateContainer input[type="email"] {
+    border: 1px solid #555;
+    background: #eee; /* Lighter background for dark mode input */
+    color: black;
+    box-shadow: var(--shadow-dark-inset-input);
+}
+body[data-theme="dark"] #emailEstimateContainer button#sendEmailBtn {
+    background: var(--primary-dark);
+    color: #111;
+    box-shadow: var(--button-shadow);
+}
+body[data-theme="dark"] #emailStatus { color: var(--fg); }
+body[data-theme="dark"] #emailStatus.success { color: #34c759; }
+body[data-theme="dark"] #emailStatus.error { color: #ff453a; }
+
+
+/* Print Button Container (Adjust if needed for centering single button) */
+#printButtonContainer {
+    margin-top: 1em; /* Adjust spacing */
+}
+#printEstimate {
+     padding: 0.8em 1.5em;
+     font-size: 1.1em;
+     width: auto;
+}
+
+/* Responsive for Email */
+@media (max-width: 600px) {
+    #emailEstimateContainer {
+        padding: 1em;
+    }
+    #emailEstimateContainer input[type="email"] {
+        flex-basis: 100%; /* Stack input/button */
+    }
+     #emailEstimateContainer button#sendEmailBtn {
+         flex-basis: 100%;
+     }
+}
+
+
+/* Print Styles */
+@media print {
+    /* Add #outputActionsContainer and #emailEstimateContainer to hidden elements */
+     header, #toggleInstructionsContainer, #instructions, #exampleImage,
+    #calcForm > *:not(#results), #roughEstimateContainer, #mainConfigRow,
+    #priceSetupContainer, #otherPartsContainer, #formActions, #printButtonContainer,
+    #themeToggleBtn, small, button, input, select, #togglePriceSetupBtn,
+    #toggleInstructionsBtn, .toggle-details-btn,
+    #outputActionsContainer, #emailEstimateContainer /* ADDED */
+     {
+        display: none !important;
+        visibility: hidden !important;
+    }
+
 @media print {
     /* Basic page setup */
     @page { size: A4; margin: 1cm; }
